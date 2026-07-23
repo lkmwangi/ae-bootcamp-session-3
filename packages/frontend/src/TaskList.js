@@ -6,6 +6,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 
+// Priority levels and their selector colors, per UI sketch (docs/stories/priority-field-ui-sketch.png)
+const PRIORITY_LEVELS = ['P1', 'P2', 'P3'];
+const PRIORITY_SELECTED_COLOR = '#07F2E6';
+const PRIORITY_UNSELECTED_COLOR = '#7A7A7A';
+
 function TaskList({ onEdit }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,6 +66,20 @@ function TaskList({ onEdit }) {
       fetchTasks();
     } catch (err) {
       setError('Failed to delete task');
+    }
+  };
+
+  const handlePriorityChange = async (task, priority) => {
+    if (task.priority === priority) return;
+    try {
+      await fetch(`/api/tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priority })
+      });
+      fetchTasks();
+    } catch (err) {
+      setError('Failed to update task priority');
     }
   };
 
@@ -220,6 +239,47 @@ function TaskList({ onEdit }) {
                   }}
                 />
               )}
+              <Box
+                role="radiogroup"
+                aria-label="Task priority"
+                sx={{
+                  display: 'flex',
+                  gap: 0.5
+                }}
+              >
+                {PRIORITY_LEVELS.map((level) => {
+                  const isSelected = (task.priority || 'P3') === level;
+                  return (
+                    <Box
+                      key={level}
+                      component="button"
+                      type="button"
+                      role="radio"
+                      aria-checked={isSelected}
+                      aria-label={`Set priority ${level}`}
+                      onClick={() => handlePriorityChange(task, level)}
+                      sx={{
+                        minWidth: 26,
+                        height: 22,
+                        px: 0.5,
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        lineHeight: 1,
+                        color: isSelected ? '#003b3b' : '#ffffff',
+                        backgroundColor: isSelected ? PRIORITY_SELECTED_COLOR : PRIORITY_UNSELECTED_COLOR,
+                        '&:hover': {
+                          opacity: 0.85
+                        }
+                      }}
+                    >
+                      {level}
+                    </Box>
+                  );
+                })}
+              </Box>
               <Box 
                 sx={{ 
                   display: 'flex', 
