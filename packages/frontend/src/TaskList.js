@@ -7,9 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 
 // Priority levels and their selector colors, per UI sketch (docs/stories/priority-field-ui-sketch.png)
+// Colors are defined as CSS classes in index.css: .priority-selected / .priority-unselected
 const PRIORITY_LEVELS = ['P1', 'P2', 'P3'];
-const PRIORITY_SELECTED_COLOR = '#07F2E6';
-const PRIORITY_UNSELECTED_COLOR = '#7A7A7A';
 
 function TaskList({ onEdit }) {
   const [tasks, setTasks] = useState([]);
@@ -258,6 +257,7 @@ function TaskList({ onEdit }) {
                       aria-checked={isSelected}
                       aria-label={`Set priority ${level}`}
                       onClick={() => handlePriorityChange(task, level)}
+                      className={isSelected ? 'priority-selected' : 'priority-unselected'}
                       sx={{
                         minWidth: 26,
                         height: 22,
@@ -268,8 +268,6 @@ function TaskList({ onEdit }) {
                         fontSize: '0.7rem',
                         fontWeight: 600,
                         lineHeight: 1,
-                        color: isSelected ? '#003b3b' : '#ffffff',
-                        backgroundColor: isSelected ? PRIORITY_SELECTED_COLOR : PRIORITY_UNSELECTED_COLOR,
                         '&:hover': {
                           opacity: 0.85
                         }
