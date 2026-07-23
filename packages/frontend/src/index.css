@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Priority selector colors (see docs/stories/priority-field-ui-sketch.png) */
+.priority-selected {
+  background-color: #07F2E6;
+  color: #003b3b;
+}
+
+.priority-unselected {
+  background-color: #7A7A7A;
+  color: #ffffff;
+}

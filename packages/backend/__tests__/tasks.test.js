@@ -18,7 +18,23 @@ describe('Tasks API', () => {
     expect(res.body.description).toBe('A test task');
     expect(res.body.due_date).toBe('2025-09-30');
     expect(res.body.completed).toBe(0);
+    expect(res.body.priority).toBe('P3');
     taskId = res.body.id;
+  });
+
+  it('should create a new task with an explicit priority', async () => {
+    const res = await request(app)
+      .post('/api/tasks')
+      .send({ title: 'Priority Task', priority: 'P1' });
+    expect(res.status).toBe(201);
+    expect(res.body.priority).toBe('P1');
+  });
+
+  it('should reject an invalid priority on create', async () => {
+    const res = await request(app)
+      .post('/api/tasks')
+      .send({ title: 'Invalid Priority Task', priority: 'P9' });
+    expect(res.status).toBe(400);
   });
 
   it('should get all tasks', async () => {
@@ -50,6 +66,21 @@ describe('Tasks API', () => {
       .send({ completed: true });
     expect(res.status).toBe(200);
     expect(res.body.completed).toBe(1);
+  });
+
+  it('should update a task priority via PATCH', async () => {
+    const res = await request(app)
+      .patch(`/api/tasks/${taskId}`)
+      .send({ priority: 'P2' });
+    expect(res.status).toBe(200);
+    expect(res.body.priority).toBe('P2');
+  });
+
+  it('should reject an invalid priority via PATCH', async () => {
+    const res = await request(app)
+      .patch(`/api/tasks/${taskId}`)
+      .send({ priority: 'P9' });
+    expect(res.status).toBe(400);
   });
 
   it('should delete a task', async () => {
